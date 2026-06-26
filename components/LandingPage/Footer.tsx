@@ -1,11 +1,20 @@
+import Image from "next/image";
+
 export default function Footer() {
   return (
     <footer className="bg-orange-100 rounded-3xl py-12 px-6 pb-28">
       <div className="max-w-md mx-auto text-center">
         {/* Logo */}
-        <h2 className="text-4xl font-black text-orange-500">
-          LabourBaba
-        </h2>
+        <div className="flex justify-center">
+          <Image
+            src="/logo.svg"
+            alt="LabourBaba Logo"
+            width={240}
+            height={60}
+            priority
+            className="object-contain"
+          />
+        </div>
 
         {/* Copyright */}
         <p className="mt-4 text-gray-800 font-medium">
