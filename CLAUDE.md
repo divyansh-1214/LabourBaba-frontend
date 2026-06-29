@@ -167,7 +167,95 @@ npm run lint     # ESLint check
 - **Dependencies Already Installed**: All packages are installed and project builds successfully
 - **Build Status**: ✅ Production build completes without errors
 
-## 11. Quick Reference
+## 11. Integrated APIs
+
+### 11.1 Health Check API
+- **Endpoint**: `GET /health`
+- **File**: `lib/api/demo.ts`
+- **Function**: `getDemo()`
+- **Description**: Basic health check endpoint to verify backend connectivity
+
+### 11.2 Authentication APIs
+- **File**: `lib/api/auth.ts`
+
+#### Client Signup
+- **Endpoint**: `POST /api/clients/signup`
+- **Function**: `clientSignup(data: SignupRequest)`
+- **Payload**: `{ phone: string, name: string, password: string }`
+- **Response**: `{ token: string, customer_id: string }`
+- **Description**: Registers a new client and stores auth_token and customer_id in HTTP-only cookies
+
+#### Client Login
+- **Endpoint**: `POST /api/clients/login`
+- **Function**: `clientLogin(data: LoginRequest)`
+- **Payload**: `{ phone: string, password: string }`
+- **Response**: `{ token: string, customer_id: string }`
+- **Description**: Authenticates a client and stores auth_token and customer_id in HTTP-only cookies
+
+#### Cookie Management
+- `setAuthToken(token: string)`: Stores auth_token in HTTP-only cookie
+- `getAuthToken()`: Retrieves auth_token from cookie
+- `removeAuthToken()`: Deletes auth_token cookie
+- `setCustomerId(customer_id: string)`: Stores customer_id in HTTP-only cookie
+- `getCustomerId()`: Retrieves customer_id from cookie
+- `removeCustomerId()`: Deletes customer_id cookie
+- `logout()`: Removes both auth_token and customer_id cookies
+
+### 11.3 Job/Request APIs
+- **File**: `lib/api/job.ts`
+
+#### Create Job
+- **Endpoint**: `POST /api/jobs`
+- **Function**: `createJob(data: CreateJobRequest)`
+- **Payload**: 
+  ```typescript
+  {
+    customer_id?: string,
+    latitude: number,
+    longitude: number,
+    location: string,
+    requirements: Array<{
+      skill_type: string,
+      worker_count_needed: number,
+      rate_per_day: number
+    }>
+  }
+  ```
+- **Headers**: `Authorization: Bearer <auth_token>`
+- **Response**: Job object with `id`
+- **Description**: Creates a new job request with location and initial requirements
+
+#### Add Job Requirement
+- **Endpoint**: `POST /api/jobs/{jobId}/requirements`
+- **Function**: `addJobRequirement(jobId: string, data: AddRequirementRequest)`
+- **Payload**:
+  ```typescript
+  {
+    skill_type: string,
+    worker_count_needed: number,
+    rate_per_day: number,
+    wave_size: number
+  }
+  ```
+- **Headers**: `Authorization: Bearer <auth_token>`
+- **Description**: Adds additional requirements to an existing job
+
+#### Get Jobs
+- **Endpoint**: `GET /api/jobs`
+- **Function**: `getJobs()`
+- **Headers**: `Authorization: Bearer <auth_token>`
+- **Params**: `customer_id`
+- **Response**: Array of Job objects
+- **Description**: Retrieves all jobs for the authenticated customer
+
+#### Get Job By ID
+- **Endpoint**: `GET /api/jobs/{jobId}`
+- **Function**: `getJobById(jobId: string)`
+- **Headers**: `Authorization: Bearer <auth_token>`
+- **Response**: Single Job object
+- **Description**: Retrieves a specific job by ID
+
+## 12. Quick Reference
 - Entry point: app/page.tsx (redirects to /landing
 - Root layout: app/layout.tsx
 - Global styles: app/globals.css
